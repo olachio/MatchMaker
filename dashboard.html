@@ -45,6 +45,11 @@
     const programName = document.getElementById("programName").value;
     const rating = parseInt(document.getElementById("rating").value);
 
+    if (programName === "") {
+      alert("Please enter a valid program name.");
+      return;
+    }
+
     if (isNaN(rating) || rating < 1 || rating > 10) {
       alert("Please enter a valid rating between 1 and 10.");
       return;
