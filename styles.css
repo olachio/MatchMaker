@@ -56,7 +56,14 @@ h4 {
 h5 {
     margin-top: 10px;
 }
+#rankedList {
+    list-style-type: none;
+    padding: 0;
+}
 
+#rankedList li {
+    margin-bottom: 10px; /* Add spacing between each program */
+}
 .button {
     display: inline-block;
     padding: 10px 20px;

@@ -5,15 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Match Maker Dashboard</title>
   <link rel="stylesheet" type="text/css" href="styles.css">
-  <script src="script.js"></script>
+  <script defer src="script.js"></script>
 </head>
 <body>
 <h1>Match Maker Dashboard</h1>
 <div class="input-group">
-  </p>
   <label for="programName">Enter Program Name:</label>
   <input type="text" id="programName">
-  </p>
 </div>
 
 <div id="questionContainer">
@@ -21,10 +19,9 @@
 </div>
 
 <div class="answer">
-  </p>
   <label for="rating">Rating (1-10):</label>
-  <input type="number" id="rating" min="1" max="10">
-  </p>
+  <input type="range" id="rating" min="1" max="10" step="1">
+  <p id="ratingValue">Rating: 5</p>
 </div>
 <div class="button-group">
   <button class="button" onclick="submitRating()">Submit</button>
@@ -33,127 +30,10 @@
 
 <div id="rankList">
   <h2>Rank List</h2>
+  <div id="categoryScores"></div>
   <ol id="rankedList"></ol>
 </div>
 
-<script>
-  let programRatings = {};
-  let currentProgram = null;
-  let currentQuestionIndex = 0;
-
-  function submitRating() {
-    const programName = document.getElementById("programName").value;
-    const rating = parseInt(document.getElementById("rating").value);
-
-    if (programName === "") {
-      alert("Please enter a valid program name.");
-      return;
-    }
-
-    if (isNaN(rating) || rating < 1 || rating > 10) {
-      alert("Please enter a valid rating between 1 and 10.");
-      return;
-    }
-
-    if (!programRatings[programName]) {
-      programRatings[programName] = [];
-    }
-    programRatings[programName].push(rating);
-
-    const questions = programQuestions;
-    if (currentQuestionIndex < questions.length - 1) {
-      currentQuestionIndex++;
-      showNextQuestion();
-    } else {
-      document.getElementById("programName").value = "";
-      document.getElementById("rating").value = ""; // Reset rating field
-      currentQuestionIndex = 0;
-      updateRankList();
-    }
-  }
-
-  function skipRating() {
-    const programName = document.getElementById("programName").value;
-    if (!programRatings[programName]) {
-      programRatings[programName] = [];
-    }
-    programRatings[programName].push(null);
-
-    const questions = programQuestions;
-    if (currentQuestionIndex < questions.length - 1) {
-      currentQuestionIndex++;
-      showNextQuestion();
-    } else {
-      document.getElementById("programName").value = "";
-      document.getElementById("rating").value = ""; // Reset rating field
-      currentQuestionIndex = 0;
-      updateRankList();
-    }
-  }
-
-  function showNextQuestion() {
-    const questions = programQuestions;
-    const questionContainer = document.getElementById("questionContainer");
-    questionContainer.innerHTML = `
-                <div class="question">
-                    <p>${questions[currentQuestionIndex]}</p>
-                </div>
-            `;
-  }
-
-  function updateRankList() {
-    const rankedList = document.getElementById("rankedList");
-    rankedList.innerHTML = "";
-
-    // Create an array to hold the programs and their average ratings
-    const rankedPrograms = [];
-
-    for (const program in programRatings) {
-      if (programRatings.hasOwnProperty(program)) {
-        const ratings = programRatings[program].filter(rating => rating !== null);
-        if (ratings.length > 0) {
-          const averageRating = ratings.reduce((total, rating) => total + rating, 0) / ratings.length;
-          rankedPrograms.push({ program, averageRating });
-        }
-      }
-    }
-
-    // Sort the programs based on their average ratings in descending order
-    rankedPrograms.sort((a, b) => b.averageRating - a.averageRating);
-
-    // Display the sorted programs in the rank list
-    rankedPrograms.forEach(program => {
-      const listItem = document.createElement("li");
-      listItem.textContent = `${program.program}: ${program.averageRating.toFixed(2)}`;
-      rankedList.appendChild(listItem);
-    });
-  }
-
-
-  const programQuestions = ["How well do the values of this residency program align with my own personal values and beliefs?",
-    "How would you rate the level of support and collaboration among faculty and peers?",
-    "Considering the mentorship and supervision available, how effective do you perceive this program to be in helping you achieve your professional goals?",
-    "Rate the resources and opportunities provided for professional growth and development:",
-    "How well does the geographic location suit your lifestyle preferences and personal interests?",
-    "How would you rate the reputation of this residency program in terms of its alignment with your career interests?",
-    "Based on size and structure, how do you rate the suitability for your learning style and preferences?",
-    "How well did you perceive the interview experience in reflecting the culture and values of this program?",
-    "How would you rate the emphasis on resident well-being and work-life balance?",
-    "Considering interdisciplinary collaboration, how would you rate the potential for networking and collaboration?",
-    "How important do you perceive the availability of support services like counseling or wellness programs within this program?",
-    "How satisfied do you perceive current residents and faculty to be with their experience?",
-    "How would you rate the fellowship and job placement opportunities offered to graduates?",
-    "How stable do you perceive both the program and department to be?",
-    "How would you rate the overall fit of this residency program based on the factors mentioned, including location, resources, reputation, size, and interview experience?"];
-
-  document.getElementById("programName").addEventListener("change", function() {
-    const programName = this.value;
-    if (programQuestions.length > 0) {
-      currentProgram = programName;
-      showNextQuestion();
-    }
-  });
-</script>
 <a href="index.html" class="button">Back to Home</a>
 </body>
 </html>
