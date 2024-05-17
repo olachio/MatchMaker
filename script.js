@@ -10,7 +10,7 @@ function redirectToAboutPage() {
 }
 
 const categories = {
-    "Resources/Reputation": [
+    "Resources and Reputation": [
         "Rate the resources and opportunities provided for professional growth and development:",
         "How would you rate the reputation of this residency program in terms of its alignment with your career interests?",
         "How stable do you perceive both the program and department to be?",
@@ -125,8 +125,6 @@ function resetForm() {
 function updateRankList() {
     const rankedList = document.getElementById("rankedList");
     rankedList.innerHTML = ""; // Clear previous list
-    const categoryScores = document.getElementById("categoryScores");
-    categoryScores.innerHTML = ""; // Clear previous category scores
 
     const rankedPrograms = [];
 
@@ -153,20 +151,65 @@ function updateRankList() {
     // Sort programs by overall score in descending order
     rankedPrograms.sort((a, b) => b.total - a.total);
 
-    // Display the sorted programs in the rank list
+    // Create table
+    const table = document.createElement("table");
+    table.classList.add("rank-table");
+
+    // Create table header
+    const thead = document.createElement("thead");
+    const headerRow = document.createElement("tr");
+
+    const programHeader = document.createElement("th");
+    programHeader.textContent = "Program Name";
+    headerRow.appendChild(programHeader);
+
+    // Create header columns
+    const overallHeader = document.createElement("th");
+    overallHeader.textContent = "Overall";
+    headerRow.appendChild(overallHeader);
+
+
+    for (const category in categories) {
+        if (categories.hasOwnProperty(category)) {
+            const th = document.createElement("th");
+            th.textContent = category;
+            headerRow.appendChild(th);
+        }
+    }
+
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+
+    // Create table body
+    const tbody = document.createElement("tbody");
+
+    // Add programs to table
     for (const program of rankedPrograms) {
-        const listItem = document.createElement("li");
-        let programScoreText = `${program.name}: `;
+        const row = document.createElement("tr");
+
+        const programCell = document.createElement("td");
+        programCell.textContent = program.name;
+        row.appendChild(programCell);
+
+        const overallCell = document.createElement("td");
+        overallCell.innerHTML = `<strong>${program.total.toFixed(1)}</strong>`;
+        row.appendChild(overallCell);
+
         for (const category in program.scores) {
             if (program.scores.hasOwnProperty(category)) {
-                programScoreText += `${category} - ${program.scores[category].toFixed(2)}, `;
+                const cell = document.createElement("td");
+                cell.textContent = program.scores[category].toFixed(1);
+                row.appendChild(cell);
             }
         }
-        programScoreText += `Overall: ${program.total.toFixed(2)}`; // Add overall score
-        listItem.textContent = programScoreText;
-        rankedList.appendChild(listItem);
+
+        tbody.appendChild(row);
     }
+
+    table.appendChild(tbody);
+    rankedList.appendChild(table);
 }
+
 
 document.getElementById("programName").addEventListener("change", function() {
     const programName = this.value;

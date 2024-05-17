@@ -80,3 +80,34 @@ h5 {
 .button:hover {
     background-color: #2C514C;
 }
+.rank-table {
+    width: 90%;
+    border-collapse: collapse;
+    margin: 0 auto;
+}
+
+.rank-table th, .rank-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.rank-table th {
+    background-color: #2C514C;
+    text-align: center;
+    color: #E3C0D3
+}
+
+.rank-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+    color: #122932
+}
+
+.rank-table tr:hover {
+    background-color: #E3C0D3;
+}
+
+.rank-table td strong {
+    font-weight: bold;
+    color: #122932;
+    text-decoration: underline #2C514C;
+}
